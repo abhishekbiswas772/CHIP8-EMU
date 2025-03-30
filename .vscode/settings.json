@@ -2,6 +2,10 @@
     "files.associations": {
         "sdl.h": "c",
         "stdio.h": "c",
-        "chip8memory.h": "c"
+        "chip8memory.h": "c",
+        "assert.h": "c",
+        "chip8.h": "c",
+        "chip8stack.h": "c",
+        "config.h": "c"
     }
 }
