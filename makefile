@@ -1,8 +1,4 @@
-
-CFLAGS=-std=c17 -Wall -Wextra -Werror
-
+INCLUDES = -I ./include
+FLAGS = -g
 all:
-	gcc chip8.c -o chip8 $(CFLAGS) `sdl2-config --cflags --libs`
-
-debug:
-	gcc chip8.c -o chip8 $(CFLAGS) `sdl2-config --cflags --libs` -DDEBUG
+	gcc ${FLAGS} ${INCLUDES} ./src/main.c -L ./lib -lmingw32 -lSDL2main -lSDL2 -o ./bin/main
