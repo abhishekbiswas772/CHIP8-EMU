@@ -11,6 +11,7 @@
         "chip8keyboad.h": "c",
         "chip8screen.h": "c",
         "windows.h": "c",
-        "_winsock.h": "c"
+        "_winsock.h": "c",
+        "stddef.h": "c"
     }
 }
