@@ -6,6 +6,8 @@
         "assert.h": "c",
         "chip8.h": "c",
         "chip8stack.h": "c",
-        "config.h": "c"
+        "config.h": "c",
+        "chip8register.h": "c",
+        "chip8keyboad.h": "c"
     }
 }
