@@ -12,41 +12,51 @@ const char keyboard_map[CHIP8_TOTAL_KEY] = {
 
 int main(int argc, char **argv)
 {
-    if(argc < 2){
-        printf("Please provide the file to load into Chip8 memory\n");
+    if (argc < 2)
+    {
+        printf("You must provide a file to load\n");
         return -1;
     }
+
     const char* filename = argv[1];
-    printf("File: %s is loaded to Chip8", filename);
+    printf("The filename to load is: %s\n", filename);
+
     FILE* f = fopen(filename, "rb");
-    if(!f){
+    if (!f)
+    {
         printf("Failed to open the file");
         return -1;
     }
+
     fseek(f, 0, SEEK_END);
     long size = ftell(f);
     fseek(f, 0, SEEK_SET);
 
-    char buff[size];
-    int res = fread(buff, size, 1, f);
-    if(res != 1){
+    char buf[size];
+    int res = fread(buf, size, 1, f);
+    if (res != 1)
+    {
         printf("Failed to read from file");
         return -1;
     }
-
+    
     struct chip8 chip8;
     chip8_init(&chip8);
-    chip8_load(&chip8, buff, size);
+    chip8_load(&chip8, buf, size);
+    chip8_keyboard_set_map(&chip8.keyboard, keyboard_map);
+   
 
     SDL_Init(SDL_INIT_EVERYTHING);
     SDL_Window *window = SDL_CreateWindow(
         EMULATOR_WINDOW_TITLE,
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
-        CHIP8_WIDTH * CHIP8_WINDOW_MULTIPLIER, CHIP8_HEIGHT * CHIP8_WINDOW_MULTIPLIER,
-        SDL_WINDOW_SHOWN);
+        CHIP8_WIDTH * CHIP8_WINDOW_MULTIPLIER,
+        CHIP8_HEIGHT * CHIP8_WINDOW_MULTIPLIER, SDL_WINDOW_SHOWN);
+
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_TEXTUREACCESS_TARGET);
-    while (true)
+
+    while (1)
     {
         SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -56,30 +66,35 @@ int main(int argc, char **argv)
             case SDL_QUIT:
                 goto out;
                 break;
+
             case SDL_KEYDOWN:
             {
                 char key = event.key.keysym.sym;
-                int vKey = chip8_keyboard_map(keyboard_map, key);
-                if (vKey != -1)
+                printf("Key pressed: %c\n", key);  // Debug log
+                int vkey = chip8_keyboard_map(&chip8.keyboard, key);
+                if (vkey != -1)
                 {
-                    chip8_keyboard_down(&chip8.keyboard, vKey);
+                    printf("Mapped to CHIP-8 key: %d\n", vkey);  // Debug log
+                    chip8_keyboard_down(&chip8.keyboard, vkey);
                 }
             }
             break;
+
             case SDL_KEYUP:
             {
                 char key = event.key.keysym.sym;
-                int vKey = chip8_keyboard_map(keyboard_map, key);
-                if (vKey != -1)
+                printf("Key released: %c\n", key);  // Debug log
+                int vkey = chip8_keyboard_map(&chip8.keyboard, key);
+                if (vkey != -1)
                 {
-                    chip8_keyboard_up(&chip8.keyboard, vKey);
+                    printf("Mapped to CHIP-8 key: %d\n", vkey);  // Debug log
+                    chip8_keyboard_up(&chip8.keyboard, vkey);
                 }
             }
             break;
-            default:
-                break;
-            }
+            };
         }
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
@@ -88,7 +103,8 @@ int main(int argc, char **argv)
         {
             for (int y = 0; y < CHIP8_HEIGHT; y++)
             {
-                if(chip8_screen_is_set(&chip8.screen, x, y)){
+                if (chip8_screen_is_set(&chip8.screen, x, y))
+                {
                     SDL_Rect r;
                     r.x = x * CHIP8_WINDOW_MULTIPLIER;
                     r.y = y * CHIP8_WINDOW_MULTIPLIER;
@@ -98,16 +114,20 @@ int main(int argc, char **argv)
                 }
             }
         }
+
         SDL_RenderPresent(renderer);
-        if(chip8.registers.delay_timer > 0){
-            Sleep(100);
-            chip8.registers.delay_timer -= 1;
-            printf("Delay!!!\n");
+        if (chip8.registers.delay_timer > 0)
+        {
+            Sleep(10);
+            chip8.registers.delay_timer -=1;
         }
-        if(chip8.registers.sound_timer > 0){
+
+        if (chip8.registers.sound_timer > 0)
+        {
             Beep(15000, 100 * chip8.registers.sound_timer);
             chip8.registers.sound_timer = 0;
         }
+        
         unsigned short opcode = chip8_memory_get_short(&chip8.memory, chip8.registers.PC);
         chip8.registers.PC += 2;
         chip8_exec(&chip8, opcode);

@@ -5,7 +5,7 @@
 #include "config.h"
 #include "chip8register.h"
 #include "chip8stack.h"
-#include "chip8keyboad.h"
+#include "chip8keyboard.h"
 #include "chip8screen.h"
 #include <stddef.h>
 
