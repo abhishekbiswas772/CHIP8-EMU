@@ -32,19 +32,14 @@ cd CHIP8-EMU
 
 3. Compile the project:
 ```bash
-gcc src/*.c -o chip8.exe -I./include
-```
-
-Or using the provided Makefile:
-```bash
-make
+mingw32-make
 ```
 
 ## Running the Emulator
 
 After compilation, you can run the emulator with a CHIP8 ROM file:
 ```bash
-./chip8.exe path/to/your/rom.ch8
+./main.exe path/to/your/rom.ch8
 ```
 
 ## Project Structure
