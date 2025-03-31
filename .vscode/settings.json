@@ -9,6 +9,8 @@
         "config.h": "c",
         "chip8register.h": "c",
         "chip8keyboad.h": "c",
-        "chip8screen.h": "c"
+        "chip8screen.h": "c",
+        "windows.h": "c",
+        "_winsock.h": "c"
     }
 }

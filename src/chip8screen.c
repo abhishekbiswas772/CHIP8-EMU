@@ -23,7 +23,10 @@ bool chip8_screen_draw_sprite(struct chip8_screen* screen, int x, int y, const c
             if((c & (0b10000000 >> lx)) == 0) {
                 continue;
             }
-            screen->pixels[(ly+y) % CHIP8_HEIGHT][(lx+x) % CHIP8_WIDTH] = true;
+            if(screen->pixels[(ly+y) % CHIP8_HEIGHT][(lx+x) % CHIP8_WIDTH]){
+                pixel_collison = true;
+            }
+            screen->pixels[(ly+y) % CHIP8_HEIGHT][(lx+x) % CHIP8_WIDTH] ^= true;
         }
     }
     return pixel_collison;
